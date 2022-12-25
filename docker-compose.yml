@@ -1,0 +1,22 @@
+services:
+  db:
+    container_name: db_ciplay
+    image: postgres
+    expose:
+      - 5432
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+
+
+  web:
+    container_name: web_cipay
+    build: .
+    command: bash -c "alembic upgrade head && uvicorn ciplay_service.main:app --reload --host 0.0.0.0 --port 8000"
+    volumes:
+      - .:/code
+    ports:
+      - "8004:8000"
+    depends_on:
+      - db
